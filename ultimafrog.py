@@ -33,7 +33,7 @@ def main() -> None:
                     "@",
                     (255,255,255))
 
-    entities = {player} 
+    entities = {player}
 
     game_map = GameMap(map_width, map_height)
 
