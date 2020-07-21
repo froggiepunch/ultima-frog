@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import tcod
 
-from actions import EscapeAction, MovementAction
+from engine import Engine
 from entity import Entity
 from player_input import EventHandler
 
@@ -12,7 +12,10 @@ def main() -> None:
 
     # We need to set what font/tileset we're using
     # The most common is CHARMAP_CP437 (16x16 grid, previously "ASCII_INROW")
-    tileset = tcod.tileset.load_tilesheet("fonts/CGA8x8thick.png", 16, 16,
+    tileset = tcod.tileset.load_tilesheet(
+        "fonts/CGA8x8thick.png", # font file
+        16, # how many rows across
+        16, # how many columns
         tcod.tileset.CHARMAP_CP437
     )
 
@@ -22,6 +25,11 @@ def main() -> None:
     player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255,255,255))
     npc = Entity(int(screen_width / 2 + 5), int(screen_height / 5), "@", (255,255,0))
     entities = {npc, player}
+
+    engine = Engine(
+        entities=entities,
+        event_handler=event_handler,
+        player=player)
 
     with tcod.context.new_terminal(
         screen_width,
@@ -35,28 +43,11 @@ def main() -> None:
         root_console = tcod.Console(screen_width, screen_height, order="F")
 
         while True:
-            root_console.print(x=player.x, y=player.y, string=player.char, fg=player.colour)
+            engine.render(console=root_console, context=context)
 
-            # This was previously the "flush" call
-            context.present(root_console)
+            events = tcod.event.wait()
 
-            # Clean up junk left behind by stuff that gets drawn in new places
-            root_console.clear()
-
-            for event in tcod.event.wait():
-                action = event_handler.dispatch(event)
-
-                # Self explanitory, if nothing happens just keep moving
-                if action is None:
-                    continue
-
-                # If the event is a movement action...move!
-                if isinstance(action, MovementAction):
-                    player.move(dx=action.dx, dy=action.dy)
-
-                # If user presses "esc", blow up!
-                elif isinstance(action, EscapeAction):
-                    raise SystemExit()
+            engine.handle_events(events)
 
 
 if __name__ == "__main__":
