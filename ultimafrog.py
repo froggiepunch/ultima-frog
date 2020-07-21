@@ -3,12 +3,16 @@ import tcod
 
 from engine import Engine
 from entity import Entity
+from game_map import GameMap
 from player_input import EventHandler
 
 def main() -> None:
     # Declare the size of the window
     screen_width = 80
     screen_height = 50
+
+    map_width = 80
+    map_height = 45
 
     # We need to set what font/tileset we're using
     # The most common is CHARMAP_CP437 (16x16 grid, previously "ASCII_INROW")
@@ -26,9 +30,12 @@ def main() -> None:
     npc = Entity(int(screen_width / 2 + 5), int(screen_height / 5), "@", (255,255,0))
     entities = {npc, player}
 
+    game_map = GameMap(map_width, map_height)
+
     engine = Engine(
         entities=entities,
         event_handler=event_handler,
+        game_map=game_map,
         player=player)
 
     with tcod.context.new_terminal(
