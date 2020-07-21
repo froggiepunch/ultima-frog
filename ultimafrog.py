@@ -2,16 +2,13 @@
 import tcod
 
 from actions import EscapeAction, MovementAction
+from entity import Entity
 from player_input import EventHandler
 
 def main() -> None:
     # Declare the size of the window
     screen_width = 80
     screen_height = 50
-
-    # Temporary variables to hold player starting position
-    player_x = int(screen_width / 2)
-    player_y = int(screen_height / 2)
 
     # We need to set what font/tileset we're using
     # The most common is CHARMAP_CP437 (16x16 grid, previously "ASCII_INROW")
@@ -21,6 +18,10 @@ def main() -> None:
 
     # Let's process some events! How vague.
     event_handler = EventHandler()
+
+    player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255,255,255))
+    npc = Entity(int(screen_width / 2 + 5), int(screen_height / 5), "@", (255,255,0))
+    entities = {npc, player}
 
     with tcod.context.new_terminal(
         screen_width,
@@ -34,7 +35,7 @@ def main() -> None:
         root_console = tcod.Console(screen_width, screen_height, order="F")
 
         while True:
-            root_console.print(x=player_x, y=player_y, string="@")
+            root_console.print(x=player.x, y=player.y, string=player.char, fg=player.colour)
 
             # This was previously the "flush" call
             context.present(root_console)
@@ -51,8 +52,7 @@ def main() -> None:
 
                 # If the event is a movement action...move!
                 if isinstance(action, MovementAction):
-                    player_x += action.dx
-                    player_y += action.dy
+                    player.move(dx=action.dx, dy=action.dy)
 
                 # If user presses "esc", blow up!
                 elif isinstance(action, EscapeAction):
