@@ -26,9 +26,14 @@ def main() -> None:
     # Let's process some events! How vague.
     event_handler = EventHandler()
 
-    player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255,255,255))
-    npc = Entity(int(screen_width / 2 + 5), int(screen_height / 5), "@", (255,255,0))
-    entities = {npc, player}
+    # Let's create the player object
+    player = Entity(
+                    int(screen_width / 2),
+                    int(screen_height / 2),
+                    "@",
+                    (255,255,255))
+
+    entities = {player}
 
     game_map = GameMap(map_width, map_height)
 

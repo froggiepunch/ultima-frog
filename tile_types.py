@@ -32,8 +32,17 @@ def new_tile(
 
 
 floor = new_tile(
-    walkable=True, transparent=True, dark=(ord(" "), (255, 255, 255), (50, 50, 150)),
+                walkable=True, # Can be walked on
+                transparent=True, # Can be seen through
+                dark=(ord("."), # Char
+                (55, 55, 55), # Foreground colour
+                (0, 0, 0)), # Background colour
 )
+
 wall = new_tile(
-    walkable=False, transparent=False, dark=(ord(" "), (255, 255, 255), (0, 0, 100)),
+                walkable=False, # Can not be walked on
+                transparent=False, # Can not be seen through
+                dark=(ord("#"), # Char
+                (255, 255, 255), # Foreground colour
+                (0, 0, 0)), # Background colour
 )
