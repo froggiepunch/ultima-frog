@@ -17,6 +17,7 @@ tile_dt = np.dtype(
         ("walkable", np.bool),  # True if this tile can be walked over.
         ("transparent", np.bool),  # True if this tile doesn't block FOV.
         ("dark", graphic_dt),  # Graphics for when this tile is not in FOV.
+        ("light", graphic_dt), # Graphics for when tile is in FOV
     ]
 )
 
@@ -26,23 +27,25 @@ def new_tile(
     walkable: int,
     transparent: int,
     dark: Tuple[int, Tuple[int, int, int], Tuple[int, int, int]],
+    light: Tuple[int, Tuple[int, int, int], Tuple[int, int, int]],
 ) -> np.ndarray:
     """Helper function for defining individual tile types """
-    return np.array((walkable, transparent, dark), dtype=tile_dt)
+    return np.array((walkable, transparent, dark, light), dtype=tile_dt)
+
+# SHROUD represents unexplored, unseen tiles
+SHROUD = np.array((ord(" "), (255, 255, 255), (0, 0, 0)), dtype=graphic_dt)
 
 
 floor = new_tile(
                 walkable=True, # Can be walked on
                 transparent=True, # Can be seen through
-                dark=(ord("."), # Char
-                (55, 55, 55), # Foreground colour
-                (0, 0, 0)), # Background colour
+                dark=(ord("."), (40, 40, 40), (0, 0, 0)), # not in fov
+                light=(ord("."), (100, 100, 100), (0, 0, 0)), # in fov
 )
 
 wall = new_tile(
                 walkable=False, # Can not be walked on
                 transparent=False, # Can not be seen through
-                dark=(ord("#"), # Char
-                (255, 255, 255), # Foreground colour
-                (0, 0, 0)), # Background colour
+                dark=(ord("#"), (55, 55, 55), (0, 0, 0)), # not in fov
+                light=(ord("#"), (155, 155, 155), (0, 0, 0)), # in fov
 )
